@@ -1,0 +1,41 @@
+﻿@page "/setup/vehicle"
+
+@using MainApp.Components.Page
+@using MainApp.Components.Card
+@using MainApp.Components.Message
+@using MainApp.Components.Breadcrumb
+@using MainApp.Components.Badge
+
+<div class="container-lg">
+    <AuthorizeView Policy="Admin">
+        <Authorized>
+            <PageWrapper>
+
+                <PageTopView>
+                    <PageTopWrapper>
+                        <div class="d-flex align-items-baseline">
+                            <i class="bi bi-columns-gap text-info-emphasis pe-1 fs-5" /><PageTopTitle Title="Setup Vehicle" />
+                        </div>
+                        <Breadcrumb AppPageLink="@EndPoint.SetupVehicle" />
+                    </PageTopWrapper>
+                </PageTopView>
+
+                <PageMiddleView>
+                    <PageMiddleWrapper>
+                        <div class="row">
+                            <div class="col-12 col-lg-9">
+                                <SetupVehiclePanelLeft />
+                            </div>
+                        </div>
+                    </PageMiddleWrapper>
+                </PageMiddleView>
+
+                <PageBottomView />
+
+            </PageWrapper>
+        </Authorized>
+        <NotAuthorized>
+            <NotAuthorizedMessage />
+        </NotAuthorized>
+    </AuthorizeView>
+</div>

@@ -1,0 +1,296 @@
+﻿@using MainApp.Components.Badge
+@using MainApp.Components.Badge.Color
+@using MainApp.Components.Card
+@using MainApp.Components.CalendarView
+@using MainApp.Components.Dropdown.Actions
+@using MainApp.Components.Dropdown.Date
+@using MainApp.Components.Dropdown.DateRange
+@using MainApp.Components.Dropdown.Filter
+@using MainApp.Components.Spinner
+@using MainApp.Components.Accordion
+
+<CardView Styles="border-0">
+    <CardMiddle>
+        <div class="row pb-2">
+            <div class="col-10 col-lg-9 pb-2 d-flex align-items-center">
+                @if (_isLoading)
+                {
+                    <div class="d-flex justify-content-center align-items-center">
+                        <Spinner Size="Size.Sm" />
+                        <span class="ps-2">
+                            Loading ...
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <div class="btn-group align-items-center @("rounded"+_appSettings.Button)"
+                         role="group"
+                         aria-label="Radio toggle button group"
+                         title="Change view">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" value="@_viewType" @onclick="() => UpdateUIVIew(ViewType.Calendar)">
+                        <label class="btn btn-@(Size.Sm.ToString().ToLower()) btn-@(Theme.Light.ToString().ToLower() ) border-0 @("rounded-start"+_appSettings.Button) @(_viewType == @ViewType.Calendar.ToString() ? "active" : "")" for="btnradio1"><i class="bi bi-calendar3"></i></label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" value="@_viewType" @onclick="() => UpdateUIVIew(ViewType.List)">
+                        <label class="btn btn-@(Size.Sm.ToString().ToLower()) btn-@(Theme.Light.ToString().ToLower() ) border-0 @("rounded-end"+_appSettings.Button) @(_viewType == @ViewType.List.ToString() ? "active" : "")" for="btnradio2"><i class="bi bi-list-ul"></i></label>
+                    </div>
+                    @if (_viewType == ViewType.Calendar.ToString())
+                    {
+                        <div class="ps-2">
+                            <DropdownDateMonthYear 
+                                                ButtonSize="Size.Sm"
+                                                DateTimeRange="@_dateCalendar"
+                                                DropdownLabel="@_dropdownDateCalendarLabel"
+                                                OnSubmitSuccess="data => RefreshDropdownDateMonthYear(data)" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="ps-2">
+                            <DropdownDateRange ButtonSize="Size.Sm"
+                                               DateTimeRange="@_dateRange"
+                                               DropdownLabel="@_dropdownDateRangeLabel"
+                                               PeriodRange="PeriodRange.Month"
+                                               OnSubmitSuccess="data => RefreshDropdownDateRange(data)" />
+                        </div>
+                    }
+                    <div class="ps-2 d-none d-lg-flex">
+                        <div class="btn-group bg-@(Theme.Dark.ToString().ToLower())-subtle @("rounded"+_appSettings.Button)" role="group">
+                            <button class="btn btn-@(Size.Sm.ToString().ToLower()) bg-@(Theme.Dark.ToString().ToLower())-subtle text-@(Theme.Dark.ToString().ToLower())-emphasis @("rounded"+_appSettings.Button)"
+                                    @onclick="() => ApplyFiltersAsync()">
+                                <i class="bi bi-sliders2 pe-1"></i>Filters
+                                @if(IsFilterApplied())
+                                {
+                                    <sup class="ps-1">
+                                        <Badge BackgroundColor="@Theme.Light" Message="Applied" />
+                                    </sup>
+                                }
+                            </button>
+                            @if (IsFilterApplied())
+                            {
+                                <div class="d-flex align-items-center">
+                                    <div class="vr my-1 text-@(Theme.Dark.ToString().ToLower())-emphasis"></div>
+                                    <button class="btn btn-@(Size.Sm.ToString().ToLower())"
+                                            title="Remove"
+                                            @onclick="ResetAllFilters">
+                                        <i class="bi bi-x-circle text-@(Theme.Dark.ToString().ToLower())-emphasis"></i>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-2 col-lg-3 pb-2 d-flex justify-content-end">
+                <div class="d-none d-lg-block">
+                    <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-@(Theme.Primary.ToString().ToLower()) @("rounded"+_appSettings.Button)"
+                            @onclick="() => AddRecordAsync(DateTime.Now)">
+                        <i class="bi bi-plus-lg pe-1"></i>New expense
+                    </button>
+                </div>
+                <div class="d-block d-lg-none">
+                    <DropdownActions DropdownPosition="Position.End"
+                                     ButtonSize="Size.Sm">
+                        <li class="px-2 d-block d-lg-none">
+                            <button class="dropdown-item text-@(Theme.Primary.ToString().ToLower())-emphasis rounded"
+                                    @onclick="() => AddRecordAsync(DateTime.Now)">
+                                <i class="bi bi-plus-lg pe-1"></i>New expense
+                            </button>
+                        </li>
+                    </DropdownActions>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="app-page-responsive-height @(_viewType == ViewType.Calendar.ToString() ? "rounded"+_appSettings.Card : "")">
+                    @if (_isLoading)
+                    {
+                        <div class="d-flex justify-content-center align-items-center">
+                            <Spinner Size="Size.Sm" />
+                            <span class="ps-2">
+                                Loading ...
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        @if (_viewType == ViewType.Calendar.ToString())
+                        {
+                            <CalendarWrapper CalendarHasSubheader="true">
+                                    <CalendarSubHeaderView>
+                                        <CalendarSubHeaderWrapper>
+                                            <div class="d-flex justify-content-end border-bottom px-2">
+                                                <div class="d-flex pe-1">
+                                                    Total<span class="d-none d-lg-block ps-1">expenses for the period</span>
+                                                </div>
+                                                <span class="app-expense-sum-me fw-semibold px-1 text-@(Theme.Info.ToString().ToLower())-emphasis @("rounded"+_appSettings.Button)">
+                                                    @_expensesTotal.ToString("C")
+                                                </span>
+                                            </div>
+                                        </CalendarSubHeaderWrapper>
+                                    </CalendarSubHeaderView>
+                                    <CalendarHeaderView>
+                                        <CalendarHeaderWrapper />
+                                    </CalendarHeaderView>
+                                    <CalendarBodyView>
+                                        <CalendarBodyWrapper>
+                                            @if (_weeks is not null)
+                                            {
+                                                @foreach (var week in _weeks)
+                                                {
+                                                    <tr>
+                                                        @foreach (var date in week)
+                                                        {
+                                                            <td class="@((date.Year == 1 && date.Day == 1) ? $"bg-{Theme.Light.ToString().ToLower()}-subtle" : "app-calendar-cell")">
+                                                                @if ((date.Year != 1 && date.Day >= 1))
+                                                                {
+                                                                    <a role="button" class="btn w-100 h-100 p-0"
+                                                                        @onclick="() => ViewExpensesDetailsAsync(date)">
+                                                                        <div class="d-flex justify-content-end">
+                                                                            <div class="app-calendar-cell-day text-center p-1 @((DateTime.Now.Day == date.Day && DateTime.Now.Month == _dateCalendar.Start.Month) ?
+                                                                                        $"app-calendar-cell-current-day rounded-circle bg-{Theme.Danger.ToString().ToLower()}-subtle text-{Theme.Danger.ToString().ToLower()}-emphasis" :
+                                                                                        "") fw-bold text-secondary-emphasis">
+                                                                                @(date.Day)
+                                                                            </div>
+                                                                        </div>
+                                                                        @if ((date.Year != 1 && date.Day >= 1))
+                                                                        {
+                                                                            @foreach(var (item, index) in _expensesCalendarView.Select((value, index) => (value, index)))
+                                                                            {
+                                                                                if (item.EDate.Day == date.Day)
+                                                                                {
+                                                                                    <small class="d-block app-calendar-text text-secondary-emphasis" title="@item.ECategoryDescription">
+                                                                                        <BadgeColor RGBColor="@item.ECategoryColor"
+                                                                                                    Description="@item.Amount.ToString("C")" />
+                                                                                    </small>
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    </a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="d-flex justify-content-end">
+                                                                        <div class="app-calendar-cell-day text-center p-1">
+                                                                            @(string.Empty)
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            }
+                                        </CalendarBodyWrapper>
+                                    </CalendarBodyView>
+                            </CalendarWrapper>
+                        }
+                        else
+                        {
+                            @if (_expensesListView.Count <= 0)
+                            {
+                                <div class="text-center">
+                                    @Label.NoRecordFound
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="accordion d-flex justify-content-between p-3 fw-semibold
+                                            bg-@(Theme.Secondary.ToString().ToLower())-subtle">
+                                    <div class="d-flex">
+                                        Total<span class="d-none d-lg-block ps-1">expenses for the period</span>
+                                    </div>
+                                    <span class="pe-5 app-expense-sum-me">
+                                        @_expensesTotal.ToString("C")
+                                    </span>
+                                </div>
+                                <Accordion Id="Expenses">
+                                    @foreach (var (record, index) in _expensesListView.Select((value, index) => (value, index)))
+                                    {
+                                        <AccordionItem>
+                                            <AccordionHeader Id="@index.ToString()">
+                                                <BadgeColor RGBColor="@record.Color"
+                                                            Description="@record.Description" />
+                                                <div>
+                                                    @record.Total.ToString("C")
+                                                </div>
+                                            </AccordionHeader>
+                                            <AccordionBody Id="@index.ToString()">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="col-2">
+                                                                    Date
+                                                                </th>
+                                                                <th class="col-3">
+                                                                    Debit from
+                                                                </th>
+                                                                <th class="col-5">
+                                                                    Comments
+                                                                </th>
+                                                                <th class="col-2 text-end">
+                                                                    Amount
+                                                                </th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (_expensesListView.Count <= 0)
+                                                            {
+                                                                <tr class="bg-light-subtle">
+                                                                    <td class="text-center" colspan="5">
+                                                                        <div>
+                                                                            @Label.NoRecordFound
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                            else
+                                                            {
+                                                                foreach (var record in _expensesListView[index].Expenses)
+                                                                {
+                                                                    <tr class="bg-light-subtle">
+                                                                        <td>
+                                                                            @record.EDate.ToString("dd/MM/yy")
+                                                                        </td>
+                                                                        <td>
+                                                                            @record.BankDescription
+                                                                        </td>
+                                                                        <td>
+                                                                            @record.Comments
+                                                                        </td>
+                                                                        <td class="text-end">
+                                                                            @record.Amount.ToString("C")
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <button class="btn btn-link p-0 text-danger"
+                                                                                    type="button"
+                                                                                    title="Archive"
+                                                                                    @onclick="() => ArchiveRecordAsync(record)">
+                                                                                <i class="bi bi-archive"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </AccordionBody>
+                                        </AccordionItem>
+                                    }
+                                </Accordion>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </CardMiddle>
+</CardView>
+<AdminExpenseOffCanvas @ref="_setupOffCanvas" OnSubmitSuccess="RefreshList" />
+<AdminExpenseModal @ref="_setupModal" OnSubmitSuccess="RefreshList" />
+<AdminExpenseModalDetails @ref="_setupExpenseModalDetails" OnSubmitSuccess="dateTime => OpenSetupOffCanvas(dateTime)" />
+<AdminExpenseModalFilter @ref="_setupFilterModal" OnSubmitFilterSuccess="filterExpense => RefreshFilterList(filterExpense)" />

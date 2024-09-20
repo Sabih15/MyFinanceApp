@@ -1,0 +1,171 @@
+﻿@using MainApp.Components.OffCanvas
+@using MainApp.Components.Dropdown.Actions
+@using MainApp.Components.Badge
+
+<OffCanvas @ref="_offCanvasService.OffCanvas" PositionX="Position.End">
+    <div class="row align-items-center">
+        <div class="col my-4">
+            <Badge BackgroundColor="@_offCanvasService.GetOffCanvasBadge()" Message="@($"{_offCanvasService.GetOffCanvasViewType()}ing expense...")" />
+        </div>
+    </div>
+    <div class="row justify-content-between pb-2">
+        <div class="col-12">
+            <div class="form-floating">
+                <input type="text"
+                       id="Address"
+                       class="@(_formIsInvalid ? "invalid" : "") form-control @("rounded"+_appSettings.Form)"
+                       placeholder="Address"
+                       @bind-value="_locationModel.Address" />
+                <label for="Address">Address</label>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-between pb-4">
+        <div class="col-12 d-flex justify-content-end">
+            <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-outline-primary @("rounded"+_appSettings.Button)"
+                    disabled="@(_isProcessing ? true : false)"
+                    title="Verify address"
+                    @onclick="VerifyAddress">
+                @if (_isVerifying)
+                {
+                    <span>
+                        Verifying with Google...
+                    </span>
+                }
+                else
+                {
+                    <span>
+                        <i class="bi bi-check2-circle pe-1"></i>Verify address
+                    </span>
+                }
+            </button>
+        </div>
+    </div>
+
+    @if (_locationlist.Count > 0)
+    {
+        <span class="text-secondary fw-semibold">Select one from the list:</span>
+        <ul class="list-group @("rounded"+_appSettings.Form)">
+            @foreach (var (item, index) in _locationlist.Select((value, index) => (value, index)))
+            {
+                <li class="list-group-item bg-@(Theme.Dark.ToString().ToLower())-subtle">
+                    <input class="form-check-input me-1" type="radio" name="listGroupRadio" value="@index" id="@index" @onclick="() => SelectAddress(item)">
+                    <label class="form-check-label stretched-link" for="@index">
+                        <small>
+                            @item.Address
+                        </small>
+                    </label>
+                </li>
+            }
+        </ul>
+        <hr />
+    }
+    <EditForm Model="@_expenseModel"
+              OnValidSubmit="@HandleValidSubmitAsync"
+              OnInvalidSubmit="@HandleInvalidSubmitAsync"
+              autocomplete="off">
+        <DataAnnotationsValidator />
+        <div class="row pb-4">
+            <div class="col-12">
+                <div class="form-floating pb-2">
+                    <InputDate id="EDate"
+                               @attributes="_inputFormControlAttributes"
+                               placeholder="Date"
+                               @bind-Value="_expenseModel.EDate"
+                               Type="InputDateType.Date" />
+                    <label for="EDate">Date</label>
+                </div>
+                <div class="form-floating pb-2">
+                    @if (_isLoading)
+                    {
+                        <span>Loading...</span>
+                    }
+                    else
+                    {
+                        <InputSelect id="BankId"
+                                     @attributes="_inputFormSelectAttributes"
+                                     @oninput="OnValueChangedBank"
+                                     @bind-Value="_expenseModel.BankId">
+                            <option value="0">-- Select Bank --</option>
+                            @foreach (var (bank, index) in _activeBanks.Select((value, index) => (value, index)))
+                            {
+                                <option value="@bank.Id"> @($"{bank.Description} - {bank.CurrentBalance.ToString("C")}") </option>
+                            }
+                        </InputSelect>
+                        <label for="BankId">Bank</label>
+                    }
+                </div>
+                <div class="form-floating pb-2">
+                    @if (_isLoading)
+                    {
+                        <span>Loading...</span>
+                    }
+                    else
+                    {
+                        <InputSelect id="ECategoryId"
+                                     @attributes="_inputFormSelectAttributes"
+                                     @oninput="OnValueChangedExpenseCategory"
+                                     @bind-Value="_expenseModel.ECategoryId">
+                            <option value="0">-- Select Expense --</option>
+                            @foreach (var (action, index) in _activeExpenseCategories.Select((value, index) => (value, index)))
+                            {
+                                <option value="@action.Id"> @($"{action.Description}") </option>
+                            }
+                        </InputSelect>
+                        <label for="ECategoryId">Expense</label>
+                    }
+                </div>
+                <div class="form-floating pb-2">
+                    <InputText id="Comments"
+                               @attributes="_inputFormControlAttributes"
+                               placeholder="Comments"
+                               @bind-Value="_expenseModel.Comments" />
+                    <label for="Comments">Comments</label>
+                </div>
+                <div class="form-floating">
+                    <InputNumber id="Amount"
+                                 @attributes="_inputFormControlAttributes"
+                                 min="0"
+                                 placeholder="Amount"
+                                 @bind-Value="_expenseModel.Amount" />
+                    <label for="Amount">Amount</label>
+                </div>
+            </div>
+        </div>
+        @if (_displayErrorMessages)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <ValidationSummary />
+                </div>
+            </div>
+        }
+
+        @if (_formIsInvalid)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <ul class="validation-errors">
+                        <li class="validation-message">The Address field is required.</li>
+                    </ul>
+                </div>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-6">
+                <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-outline-secondary w-100 @("rounded"+_appSettings.Button)"
+                        @onclick="() => CloseOffCanvasAsync()">
+                    Cancel
+                </button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-primary w-100 @("rounded"+_appSettings.Button)"
+                        disabled="@(_isProcessing ? true : false)"
+                        type="submit">
+                    @(_isProcessing ? "Saving..." : "Save")
+                </button>
+            </div>
+        </div>
+    </EditForm>
+</OffCanvas>

@@ -1,0 +1,126 @@
+﻿@page "/setup"
+
+@using MainApp.Components.Page
+@using MainApp.Components.Card
+@using MainApp.Components.Chart.Bank
+@using MainApp.Components.Chart.Expense
+@using MainApp.Components.Chart.Transaction
+@using MainApp.Components.Message
+@using MainApp.Components.Shared
+
+<div class="container-fluid px-0">
+    <AuthorizeView>
+        <Authorized>
+            <PageWrapper>
+
+                <PageTopView>
+                    <div class="container-lg">
+                        <PageTopWrapper>
+                            <div class="d-flex align-items-baseline">
+                                <i class="bi bi-columns-gap text-info-emphasis pe-1 fs-5" /><PageTopTitle Title="Setup" />
+                            </div>
+                        </PageTopWrapper>
+                    </div>
+                </PageTopView>
+
+                <PageMiddleView>
+                    <PageMiddleWrapper>
+                        <div class="app-page-background-success pb-5">
+                            <div class="container-lg">
+                                <div class="row gy-5">
+                                    <div class="col-sm-12 col-md-4 d-flex flex-sm-column flex-md-row justify-content-center">
+                                        <CardView Styles="w-100 border-0">
+                                            <CardMiddle>
+                                                <div class="d-grid gap-3">
+                                                    <NavLink href="@EndPoint.SetupBank">
+                                                        <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                            <i class="bi bi-bank text-info-emphasis fs-5"></i>
+                                                            <div class="w-100 text-start ps-3 pe-2">
+                                                                <h3 class="mb-1 h5">Bank</h3>
+                                                                <div class="text-secondary pb-2">
+                                                                    <small class="text-wrap">Add, update and view list of banks.</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-secondary">
+                                                                <i class="bi bi-chevron-right"></i>
+                                                            </div>
+                                                        </div>
+                                                    </NavLink>
+                                                    <NavLink href="@EndPoint.SetupExpense">
+                                                        <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                            <i class="bi bi-cart4 text-info-emphasis fs-5"></i>
+                                                            <div class="w-100 text-start ps-3 pe-2">
+                                                                <h3 class="mb-1 h5">Expense</h3>
+                                                                <div class="text-secondary pb-2">
+                                                                    <small class="text-wrap">Add, update and view list of expense categories.</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-secondary ps-3 pe-2">
+                                                                <i class="bi bi-chevron-right"></i>
+                                                            </div>
+                                                        </div>
+                                                    </NavLink>
+                                                    <NavLink href="@EndPoint.SetupTransaction">
+                                                        <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                            <i class="bi bi-currency-exchange text-info-emphasis fs-5"></i>
+                                                            <div class="w-100 text-start ps-3 pe-2">
+                                                                <h3 class="mb-1 h5">Transaction</h3>
+                                                                <div class="text-secondary pb-2">
+                                                                    <small class="text-wrap">Add, update and view list of transaction categories.</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-secondary">
+                                                                <i class="bi bi-chevron-right"></i>
+                                                            </div>
+                                                        </div>
+                                                    </NavLink>
+                                                    <NavLink href="@EndPoint.SetupCompany">
+                                                        <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                            <i class="bi bi-building text-info-emphasis fs-5"></i>
+                                                            <div class="w-100 text-start ps-3 pe-2">
+                                                                <h3 class="mb-1 h5">Company</h3>
+                                                                <div class="text-secondary pb-2">
+                                                                    <small class="text-wrap">Add, update and view list of companies.</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-secondary">
+                                                                <i class="bi bi-chevron-right"></i>
+                                                            </div>
+                                                        </div>
+                                                    </NavLink>
+                                                    <NavLink href="@EndPoint.SetupVehicle">
+                                                        <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                            <i class="bi bi-truck text-info-emphasis fs-5"></i>
+                                                            <div class="w-100 text-start ps-3 pe-2">
+                                                                <h3 class="mb-1 h5">Vehicle</h3>
+                                                                <div class="text-secondary pb-2">
+                                                                    <small class="text-wrap">Add, update and view list of vehicles.</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-secondary">
+                                                                <i class="bi bi-chevron-right"></i>
+                                                            </div>
+                                                        </div>
+                                                    </NavLink>
+                                                </div>
+                                            </CardMiddle>
+                                        </CardView>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 d-flex flex-sm-column flex-md-row justify-content-center">
+                                        <img src="/img/clean-organized-desk.jpg"
+                                             alt="clean organized desk"
+                                             class="img-fluid rounded-pill" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </PageMiddleWrapper>
+                </PageMiddleView>
+                <PageBottomView />
+            </PageWrapper>
+        </Authorized>
+        <NotAuthorized>
+            <NotAuthorizedMessage />
+        </NotAuthorized>
+    </AuthorizeView>
+</div>

@@ -1,0 +1,188 @@
+﻿@page "/dashboard"
+
+@using MainApp.Components.Page
+@using MainApp.Components.Card
+@using MainApp.Components.Breadcrumb
+@using MainApp.Components.Badge
+@using MainApp.Components.Message
+@using MainApp.Components.Chart.Bank
+@using MainApp.Components.Chart.Expense
+@using MainApp.Components.Chart.Transaction
+@using MainApp.Components.Shared
+
+<div class="container-fluid px-0">
+    <AuthorizeView>
+        <Authorized>
+            <PageWrapper>
+
+                <PageTopView>
+                    <div class="container-lg">
+                        <PageTopWrapper>
+                            <div class="d-flex align-items-baseline">
+                                <i class="bi bi-house text-info-emphasis pe-1 fs-5" /><PageTopTitle Title="Dashboard" />
+                            </div>
+                        </PageTopWrapper>
+                    </div>
+                </PageTopView>
+
+                <PageMiddleView>
+                    <PageMiddleWrapper>
+                        <div class="app-page-background-secondary mb-5 pb-5">
+                            <div class="container-lg">
+                                <div class="row gy-5">
+                                    <div class="col-12 col-md-8 d-flex flex-sm-column flex-md-row justify-content-center">
+                                        <CardView Styles="w-100 border-0">
+                                            <CardMiddle>
+                                                <div class="pb-5">
+                                                    <ChartTransactionIOByMonth ChartType="ChartType.line" />
+                                                </div>
+                                            </CardMiddle>
+                                        </CardView>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-sm-column flex-md-row justify-content-center d-none d-md-flex">
+                                        <CardView Styles="w-100 border-0">
+                                            <CardMiddle>
+                                                <FinnhubNews />
+                                            </CardMiddle>
+                                        </CardView>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-lg pb-5">
+                            <div class="row gy-5">
+                                <div class="col-sm-12 col-md-4 d-flex flex-sm-column flex-md-row justify-content-center">
+                                    <CardView Styles="w-100 border-0 bg-transparent">
+                                        <CardMiddle>
+                                            <h2 class="fs-5">
+                                                <span class="text-info-emphasis app-text-background-info px-2">Quick links</span>
+                                            </h2>
+                                            <div class="d-grid gap-3">
+                                                <NavLink href="@EndPoint.Admin">
+                                                    <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                        <i class="bi  bi-grid-3x3-gap text-info-emphasis fs-5"></i>
+                                                        <div class="w-100 text-start ps-3 pe-2">
+                                                            <h3 class="mb-1 h5">
+                                                                Admin
+                                                                <sup>
+                                                                    <Badge Message="Dashboard"/>
+                                                                </sup>
+                                                            </h3>
+                                                        </div>
+                                                        <div class="text-secondary">
+                                                            <i class="bi bi-chevron-right"></i>
+                                                        </div>
+                                                    </div>
+                                                </NavLink>
+                                                <NavLink href="@EndPoint.AdminExpenses">
+                                                    <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                        <i class="bi bi-cart4 text-info-emphasis fs-5"></i>
+                                                        <div class="w-100 text-start ps-3 pe-2">
+                                                            <h3 class="mb-1 h5">Expenses</h3>
+                                                        </div>
+                                                        <div class="text-secondary">
+                                                            <i class="bi bi-chevron-right"></i>
+                                                        </div>
+                                                    </div>
+                                                </NavLink>
+                                                <NavLink href="@EndPoint.Settings">
+                                                    <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                        <i class="bi bi-sliders text-info-emphasis fs-5"></i>
+                                                        <div class="w-100 text-start ps-3 pe-2">
+                                                            <h3 class="mb-1 h5">Settings</h3>
+                                                        </div>
+                                                        <div class="text-secondary">
+                                                            <i class="bi bi-chevron-right"></i>
+                                                        </div>
+                                                    </div>
+                                                </NavLink>
+                                                <NavLink href="@EndPoint.Setup">
+                                                    <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                        <i class="bi bi-columns-gap text-info-emphasis fs-5"></i>
+                                                        <div class="w-100 text-start ps-3 pe-2">
+                                                            <h3 class="mb-1 h5">
+                                                                Setup
+                                                                <sup>
+                                                                    <Badge Message="Dashboard"/>
+                                                                </sup>
+                                                            </h3>
+                                                        </div>
+                                                        <div class="text-secondary">
+                                                            <i class="bi bi-chevron-right"></i>
+                                                        </div>
+                                                    </div>
+                                                </NavLink>
+                                                <NavLink href="@EndPoint.AdminTimesheet">
+                                                    <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                        <i class="bi bi-clock-history text-info-emphasis fs-5"></i>
+                                                        <div class="w-100 text-start ps-3 pe-2">
+                                                            <h3 class="mb-1 h5">Timesheet</h3>
+                                                        </div>
+                                                        <div class="text-secondary">
+                                                            <i class="bi bi-chevron-right"></i>
+                                                        </div>
+                                                    </div>
+                                                </NavLink>
+                                                <NavLink href="@EndPoint.AdminTransactions">
+                                                    <div class="btn bg-light-subtle d-flex w-100 align-items-center @("rounded"+_appSettings.Card)">
+                                                        <i class="bi bi-currency-exchange text-info-emphasis fs-5"></i>
+                                                        <div class="w-100 text-start ps-3 pe-2">
+                                                            <h3 class="mb-1 h5">Transactions</h3>
+                                                        </div>
+                                                        <div class="text-secondary">
+                                                            <i class="bi bi-chevron-right"></i>
+                                                        </div>
+                                                    </div>
+                                                </NavLink>
+                                            </div>
+                                        </CardMiddle>
+                                    </CardView>
+                                </div>
+                                <div class="col-sm-12 col-md-8 d-flex flex-sm-column flex-md-row justify-content-center">
+                                    <CardView Styles="w-100 border-0">
+                                        <CardMiddle>
+                                            <MapLocationExpense Color="MapMarkerColor.Brown"
+                                                                Width="MapSize.Width800"
+                                                                Height="MapSize.Height250"
+                                                                Scale="MapScale.Desktop"
+                                                                DateRange="@_dateTimeRange"
+                                                                PeriodRange="PeriodRange.Year" />
+                                        </CardMiddle>
+                                    </CardView>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="app-page-background-secondary">
+                            <div class="container-lg">
+                                <div class="row gy-5 app-footer-gap">
+                                    <div class="col-sm-12 col-md-8 d-flex flex-sm-column flex-md-row justify-content-center">
+                                        <CardView Styles="w-100 border-0">
+                                            <CardMiddle>
+                                                <ChartTransactionIOByDay ChartType="ChartType.line"
+                                                                         DateRange="@_dateTimeRange"
+                                                                         PeriodRange="PeriodRange.Year" />
+                                            </CardMiddle>
+                                        </CardView>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-sm-column flex-md-row justify-content-center">
+                                        <CardView Styles="w-100 border-0">
+                                            <CardMiddle>
+                                                <ChartExpenseLast5Years />
+                                            </CardMiddle>
+                                        </CardView>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </PageMiddleWrapper>
+                </PageMiddleView>
+
+                <PageBottomView />
+
+            </PageWrapper>
+        </Authorized>
+        <NotAuthorized>
+            <NotAuthorizedMessage />
+        </NotAuthorized>
+    </AuthorizeView>
+</div>

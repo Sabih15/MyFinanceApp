@@ -1,0 +1,43 @@
+﻿@page "/admin/expenses"
+@using MainApp.Components.Badge
+@using MainApp.Components.Breadcrumb
+@using MainApp.Components.Card
+@using MainApp.Components.Message
+@using MainApp.Components.Page
+
+<div class="container-lg">
+    <AuthorizeView Policy="Admin">
+        <Authorized>
+            <PageWrapper>
+
+                <PageTopView>
+                    <PageTopWrapper>
+                        <div class="d-flex align-items-baseline">
+                            <i class="bi bi-cart4 text-info-emphasis pe-1 fs-5" /><PageTopTitle Title="Expenses" />
+                        </div>
+                        <Breadcrumb AppPageLink="@EndPoint.AdminExpenses" />
+                    </PageTopWrapper>
+                </PageTopView>
+
+                <PageMiddleView>
+                    <PageMiddleWrapper>
+                        <div class="row">
+                            <div class="col-12 col-lg-9">
+                                <AdminExpensePanelLeft />
+                            </div>
+                            <div class="col-12 col-lg-3 d-none d-lg-block">
+                                <AdminExpensePanelRight />
+                            </div>
+                        </div>
+                    </PageMiddleWrapper>
+                </PageMiddleView>
+
+                <PageBottomView />
+
+            </PageWrapper>
+        </Authorized>
+        <NotAuthorized>
+            <NotAuthorizedMessage />
+        </NotAuthorized>
+    </AuthorizeView>
+</div>

@@ -1,0 +1,131 @@
+﻿@using MainApp.Components.OffCanvas
+@using MainApp.Components.Dropdown.Actions
+@using MainApp.Components.Badge
+
+<OffCanvas @ref="_offCanvasService.OffCanvas" PositionX="Position.End">
+    <EditForm Model="@_transactionModel"
+              OnValidSubmit="@HandleValidSubmitAsync"
+              OnInvalidSubmit="@HandleInvalidSubmitAsync"
+              autocomplete="off">
+        <DataAnnotationsValidator />
+        <div class="row align-items-center">
+            <div class="col my-4">
+                <Badge BackgroundColor="@_offCanvasService.GetOffCanvasBadge()" Message="@($"{_offCanvasService.GetOffCanvasViewType()}ing transaction...")" />
+            </div>
+        </div>
+        <div class="row pb-4">
+            <div class="col-12">
+                <div class="form-floating pb-2">
+                    <InputDate id="TDate"
+                               @attributes="_inputFormControlAttributes"
+                               placeholder="Date"
+                               @bind-Value="_transactionModel.TDate"
+                               Type="InputDateType.Date" />
+                    <label for="TDate">Date</label>
+                </div>
+                <div class="form-floating pb-2">
+                    @if (_isLoading)
+                    {
+                        <span>Loading...</span>
+                    }
+                    else
+                    {
+                        <InputSelect id="TCategoryId"
+                                     @attributes="_inputFormSelectAttributes"
+                                     @oninput="OnValueChangedCategoryType"
+                                     @bind-Value="_transactionModel.TCategoryId">
+                            <option value="0">-- Select Action --</option>
+                            @foreach (var (action, index) in _activeTransactionCategories.Select((value, index) => (value, index)))
+                            {
+                                <option value="@action.Id"> @($"{action.Description}") </option>
+                            }
+                        </InputSelect>
+                        <label for="TCategoryId">Action</label>
+                    }
+                </div>
+                <div class="form-floating pb-2">
+                    @if (_isLoading)
+                    {
+                        <span>Loading...</span>
+                    }
+                    else
+                    {
+                        <InputSelect id="FromBank"
+                                     @attributes="_inputFormSelectAttributes"
+                                     @oninput="OnValueChangedFromBank"
+                                     @bind-Value="_transactionModel.FromBank">
+                            <option value="0">-- Select Bank --</option>
+                            @foreach (var (bank, index) in _activeBanks.Select((value, index) => (value, index)))
+                            {
+                                <option value="@bank.Id"> @($"{bank.Description} - {bank.CurrentBalance.ToString("C")}") </option>
+                            }
+                        </InputSelect>
+                        <label for="FromBank">From Bank</label>
+                    }
+                </div>
+                @if (_actionType == TransactionActionType.T.ToString())
+                {
+                    <div class="form-floating pb-2">
+                        @if (_isLoading)
+                        {
+                            <span>Loading...</span>
+                        }
+                        else
+                        {
+                            <InputSelect id="ToBank"
+                                         @attributes="_inputFormSelectAttributes"
+                                         @oninput="OnValueChangedToBank"
+                                         @bind-Value="_transactionModel.ToBank">
+                                <option value="0">-- Select Bank --</option>
+                                @foreach (var (bank, index) in _activeBanks.Select((value, index) => (value, index)))
+                                {
+                                    <option value="@bank.Id"> @($"{bank.Description} - {bank.CurrentBalance.ToString("C")}") </option>
+                                }
+                            </InputSelect>
+                            <label for="ToBank">To Bank</label>
+                        }
+                    </div>
+                }
+                <div class="form-floating pb-2">
+                    <InputText id="Comments"
+                               @attributes="(_actionType == TransactionActionType.T.ToString() ? _inputFormControlDisabledAttributes : _inputFormControlAttributes)"
+                               placeholder="Comments"
+                               readonly="@((_actionType == TransactionActionType.T.ToString()) ? true: false)"
+                               @bind-Value="_transactionModel.Comments" />
+                    <label for="Comments">Comments</label>
+                </div>
+                <div class="form-floating">
+                    <InputNumber id="Amount"
+                                 @attributes="_inputFormControlAttributes"
+                                 min="0"
+                                 placeholder="Amount"
+                                 @bind-Value="_transactionModel.Amount" />
+                    <label for="Amount">Amount</label>
+                </div>
+            </div>
+        </div>
+        @if (_displayErrorMessages)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <ValidationSummary />
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-6">
+                <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-outline-secondary w-100 @("rounded"+_appSettings.Button)"
+                        @onclick="() => CloseOffCanvasAsync()">
+                    Cancel
+                </button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-primary w-100 @("rounded"+_appSettings.Button)"
+                        disabled="@(_isProcessing ? true : false)"
+                        type="submit">
+                    @(_isProcessing ? "Saving..." : "Save")
+                </button>
+            </div>
+        </div>
+    </EditForm>
+</OffCanvas>

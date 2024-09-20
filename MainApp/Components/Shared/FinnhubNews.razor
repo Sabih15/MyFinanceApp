@@ -1,0 +1,62 @@
+﻿@using MainApp.Components.ListGroup
+@using MainApp.Components.Shared
+@using MainApp.Components.Spinner
+
+<SharedHeader Title="Latest news"
+              Icon="bi-rss"
+              IconColor="Theme.Danger" />
+
+@if (_isLoading)
+{
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <Spinner Size="Size.Sm" />
+        <span class="ps-1">
+            Loading ...
+        </span>
+    </div>
+}
+else
+{
+    @if (_newsList.Success is true)
+    {
+        <ListGroup Styles="overflow-y-scroll app-feeds-news">
+            @foreach (var record in _newsList.Data)
+            {
+                <ListGroupItemNews Image="@record.Image"
+                                   Title="@record.Headline"
+                                   Url="@record.Url"
+                                   Summary="@record.Summary" />
+            }
+        </ListGroup>
+        <div class="d-flex justify-content-between align-items-center pt-2">
+            <small>
+                Source: <NavLink href="https://finnhub.io" class="text-decoration-underline" target="_blank">https://finnhub.io</NavLink>
+            </small>
+            <button class="btn btn-@(Size.Sm.ToString().ToLower()) bg-@(Theme.Info.ToString().ToLower())-subtle text-@(Theme.Info.ToString().ToLower())-emphasis d-none d-lg-block @("rounded"+_appSettings.Button)"
+                    title="Refresh"
+                    @onclick="RefreshNewsAsync">
+                <i class="bi bi-arrow-clockwise pe-1"></i>Refresh
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column justify-content-center align-items-center h-100">
+            <div class="pb-5">
+                <div class="d-flex flex-column text-center">
+                    <i class="bi bi-wifi-off fs-2 text-@(Theme.Danger.ToString().ToLower())-emphasis"></i>
+                    <small>
+                        No feeds available!
+                    </small>
+                </div>
+            </div>
+            <div class="py-4">
+                <button class="btn btn-@(Size.Sm.ToString().ToLower()) bg-@(Theme.Info.ToString().ToLower())-subtle  text-@(Theme.Info.ToString().ToLower())-emphasis @("rounded"+_appSettings.Button)"
+                        title="Refresh"
+                        @onclick="RefreshNewsAsync">
+                    <i class="bi bi-arrow-clockwise pe-1"></i>Refresh
+                </button>
+            </div>
+        </div>
+    }
+}

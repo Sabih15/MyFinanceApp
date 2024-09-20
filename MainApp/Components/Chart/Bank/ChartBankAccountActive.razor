@@ -1,0 +1,30 @@
+﻿@using MainApp.Components.Card
+@using MainApp.Components.Badge
+@using MainApp.Components.Spinner
+@using MainApp.Components.Shared
+
+<SharedHeader Title="Bank Accounts"
+              Icon="@_chartIcon"
+              IconColor="Theme.Info" />
+
+@if (_isLoading)
+{
+    <div class="d-flex justify-content-center align-items-center">
+        <Spinner Size="Size.Sm" />
+        <span class="ps-1">
+            Loading ...
+        </span>
+    </div>
+}
+else
+{
+    <div class="row justify-content-center align-items-center h-100">
+        <div class="col">
+            <Chart Id="BankAccountActive"
+                   Type="@ChartType"
+                   Data="@(_chartConfigData)"
+                   Position="Position.Left"
+                   OnSubmitSuccess="data => SetChartObjectReference(data)" />
+        </div>
+    </div>
+}

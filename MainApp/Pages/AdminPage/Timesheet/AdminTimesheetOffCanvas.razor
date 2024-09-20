@@ -1,0 +1,184 @@
+﻿@using MainApp.Components.OffCanvas
+@using MainApp.Components.Dropdown.Actions
+@using MainApp.Components.Badge
+
+<OffCanvas @ref="_offCanvasService.OffCanvas" PositionX="Position.End">
+    <EditForm Model="@_timesheetModel"
+              OnValidSubmit="@HandleValidSubmitAsync"
+              OnInvalidSubmit="@HandleInvalidSubmitAsync"
+              autocomplete="off">
+        <DataAnnotationsValidator />
+        <div class="row align-items-center">
+            <div class="col my-4">
+                <Badge BackgroundColor="@_offCanvasService.GetOffCanvasBadge()" Message="@($"{_offCanvasService.GetOffCanvasViewType()}ing timesheet...")" />
+            </div>
+            @if (_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                   _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit)
+            {
+                <div class="col my-4 d-flex justify-content-end">
+                    <DropdownActions ButtonColor="Theme.Danger">
+                        <li class="px-2">
+                            <button class="dropdown-item rounded text-@(Theme.Danger.ToString().ToLower())-emphasis"
+                                    @onclick="ArchiveAsync">
+                                <i class="bi bi-archive pe-1"></i>Archive
+                            </button>
+                        </li>
+                    </DropdownActions>
+                </div>
+            }
+        </div>
+        @if (_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <button class="btn btn-primary w-100 @("rounded"+_appSettings.Button)"
+                            type="button"
+                            @onclick="UpdateFormStateAsync">
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="py-3">
+                <hr />
+            </div>
+        }
+        <div class="row pb-4">
+            <div class="col-12">
+                <div class="form-floating pb-2">
+                    @if (_isLoading)
+                    {
+                        <span>Loading...</span>
+                    }
+                    else
+                    {
+                        <InputSelect id="CompanyId"
+                                     @attributes="_inputFormSelectAttributes"
+                                     disabled="@((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                               _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive ||
+                                               _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit ) ? true: false)"
+                                     @oninput="OnValueChanged"
+                                     @bind-Value="_timesheetModel.CompanyId">
+                            <option value="0">-- Select Company --</option>
+                            @foreach (var (company, index) in _activeCompanies.Select((value, index) => (value, index)))
+                            {
+                                <option value="@company.Id"> @($"{company.Description}") </option>
+                            }
+                        </InputSelect>
+                        <label for="CompanyId">Company</label>
+                    }
+                </div>
+                <div class="form-floating pb-2">
+                    <InputDate id="TimeIn"
+                               @attributes="((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                            _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive ||
+                                            _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit) ? _inputFormControlAttributesPlainText : _inputFormControlAttributes)"
+                               placeholder="Clock in"
+                               readonly="@((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                           _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive ||
+                                           _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit) ? true: false)"
+                               @bind-Value="_timesheetModel.TimeIn"
+                               Type="InputDateType.DateTimeLocal" />
+                    <label for="TimeIn">Clock in</label>
+                </div>
+                <div class="form-floating pb-2">
+                    <InputNumber id="TimeBreak"
+                                 @attributes="((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                              _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive ||
+                                              _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit) ? _inputFormControlAttributesPlainText : _inputFormControlAttributes)"
+                                 placeholder="Break (in minutes)"
+                                 min="0"
+                                 max="60"
+                                 readonly="@((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                             _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive ||
+                                             _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit ) ? true: false)"
+                                 @bind-Value="_timesheetModel.TimeBreak" />
+                    <label for="TimeBreak">Break (in minutes)</label>
+                </div>
+                <div class="form-floating pb-2">
+                    <InputDate id="TimeOut"
+                               @attributes="((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                            _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive ||
+                                            _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit) ? _inputFormControlAttributesPlainText : _inputFormControlAttributes)"
+                               placeholder="Clock out"
+                               readonly="@((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                           _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive ||
+                                           _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit) ? true: false)"
+                               @bind-Value="_timesheetModel.TimeOut"
+                               Type="InputDateType.DateTimeLocal" />
+                    <label for="TimeOut">Clock out</label>
+                </div>
+                <div class="form-floating pb-4">
+                    <InputText id="Comments"
+                               @attributes="@((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                          _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive) ? _inputFormControlAttributesPlainText : _inputFormControlAttributes)"
+                               placeholder="Comments"
+                               readonly="@((_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.View ||
+                                           _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Archive) ? true: false)"
+                               @bind-Value="_timesheetModel.Comments" />
+                    <label for="Comments">Comments</label>
+                </div>
+                @if (_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Add)
+                {
+                    <div class="form-check form-switch form-check-reverse d-flex justify-content-start">
+                        <label class="form-check-label pe-2" for="IsDifferentRate">Public holiday or different rate?</label>
+                        <InputCheckbox class="form-check-input"
+                                       type="checkbox"
+                                       role="switch"
+                                       id="IsDifferentRate"
+                                       @bind-Value="_isDifferentRate" />
+                    </div>
+                    if (_isDifferentRate)
+                    {
+                        <div class="form-floating mb-3">
+                            <InputNumber id="HourRate"
+                                         @attributes="_inputFormControlAttributes"
+                                         min="0"
+                                         placeholder="Hour Rate"
+                                         @bind-Value="_timesheetModel.HourRate" />
+                            <label for="HourRate">Hour Rate</label>
+                        </div>
+                    }
+                }
+
+                @if (_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit)
+                {
+                    <div class="form-check form-switch form-check-reverse d-flex justify-content-start">
+                        <label class="form-check-label pe-2" for="IsActive">Active?</label>
+                        <InputCheckbox class="form-check-input"
+                                        type="checkbox"
+                                        role="switch"
+                                        id="IsActive"
+                                        @bind-Value="_timesheetModel.IsActive" />
+                    </div>
+                }
+            </div>
+        </div>
+        @if (_offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Add ||
+               _offCanvasService.GetOffCanvasViewType() == OffCanvasViewType.Edit)
+        {
+            @if (_displayErrorMessages)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <ValidationSummary />
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-6">
+                    <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-outline-secondary w-100 @("rounded"+_appSettings.Button)"
+                            @onclick="() => CloseOffCanvasAsync()">
+                        Cancel
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-primary w-100 @("rounded"+_appSettings.Button)"
+                            disabled="@(_isProcessing ? true : false)"
+                            type="submit">
+                        @(_isProcessing ? "Saving..." : "Save")
+                    </button>
+                </div>
+            </div>
+        }
+    </EditForm>
+</OffCanvas>

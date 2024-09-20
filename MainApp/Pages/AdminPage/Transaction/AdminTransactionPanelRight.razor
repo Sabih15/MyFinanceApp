@@ -1,0 +1,14 @@
+﻿@using MainApp.Components.Card
+@using MainApp.Components.Chart.Transaction
+
+<CardView Styles="w-100 border-0 mb-4">
+    <CardMiddle>
+        <ChartTransactionLast3Months />
+        <hr class="py-2"  />
+        <NavLink href="@EndPoint.AdminTransactionsCharts" target="_blank">
+            <div class="w-100 btn btn-@(Size.Sm.ToString().ToLower()) bg-@(Theme.Dark.ToString().ToLower())-subtle text-@(Theme.Dark.ToString().ToLower())-emphasis @("rounded"+_appSettings.Button)">
+                <i class="bi bi-bar-chart-line pe-1"></i>View more charts
+            </div>
+        </NavLink>
+    </CardMiddle>
+</CardView>

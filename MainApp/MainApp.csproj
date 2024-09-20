@@ -1,0 +1,86 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>f00d4799-850b-4798-81aa-5cd9e46bf29a</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyFinanceAppLibrary\MyFinanceAppLibrary.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\DateTimeLibrary\DateTimeLibrary.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\ExtensionsLibrary\ExtensionsLibrary.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Microsoft.Identity.Web" />
+    <None Remove="Microsoft.Identity.Web.UI" />
+    <None Remove="Pages\SetupPage\" />
+    <None Remove="Services\" />
+    <None Remove="Microsoft.AspNetCore.Components.DataAnnotations.Validation" />
+    <None Remove="Pages\SetupPage\Bank\" />
+    <None Remove="Pages\SetupPage\Bank\SetupBankLeftPanel.razorcs" />
+    <None Remove="Pages\SetupPage\Vehicle\" />
+    <None Remove="Pages\SetupPage\Company\" />
+    <None Remove="Components\Chart\Bank\" />
+    <None Remove="Pages\DashboardPage\" />
+    <None Remove="Pages\AdminPage\" />
+    <None Remove="Pages\AdminPage\Timesheet\" />
+    <None Remove="Components\Shared\" />
+    <None Remove="Pages\AdminPage\Transaction\" />
+    <None Remove="Components\Accordion\" />
+    <None Remove="Pages\AdminPage\Expense\" />
+    <None Remove="Pages\AdminPage\Trip\" />
+    <None Remove="Components\Chart\Transaction\" />
+    <None Remove="Components\Chart\Expense\" />
+    <None Remove="Components\Dropdown\DateRange\" />
+    <None Remove="Components\Dropdown\Actions\" />
+    <None Remove="Components\Dropdown\Filter\" />
+    <None Remove="Components\Badge\Color\" />
+    <None Remove="BackgroundServices\" />
+    <None Remove="Factories\" />
+    <None Remove="Settings\Shared\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.12.4" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.12.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-rc1.20223.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\SetupPage\" />
+    <Folder Include="Services\" />
+    <Folder Include="Pages\SetupPage\Bank\" />
+    <Folder Include="Pages\SetupPage\Vehicle\" />
+    <Folder Include="Pages\SetupPage\Company\" />
+    <Folder Include="Components\Chart\Bank\" />
+    <Folder Include="Pages\DashboardPage\" />
+    <Folder Include="Pages\AdminPage\" />
+    <Folder Include="Pages\AdminPage\Timesheet\" />
+    <Folder Include="Components\Shared\" />
+    <Folder Include="Pages\AdminPage\Transaction\" />
+    <Folder Include="Components\Accordion\" />
+    <Folder Include="Pages\AdminPage\Expense\" />
+    <Folder Include="Pages\AdminPage\Trip\" />
+    <Folder Include="Components\Chart\Transaction\" />
+    <Folder Include="Components\Chart\Expense\" />
+    <Folder Include="Components\Dropdown\DateRange\" />
+    <Folder Include="Components\Dropdown\Actions\" />
+    <Folder Include="Components\Dropdown\Filter\" />
+    <Folder Include="Components\Badge\Color\" />
+    <Folder Include="BackgroundServices\" />
+    <Folder Include="Factories\" />
+    <Folder Include="wwwroot\img\" />
+    <Folder Include="Settings\Shared\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\images\map-static-expenses.png" />
+    <Content Remove="wwwroot\img\" />
+  </ItemGroup>
+</Project>

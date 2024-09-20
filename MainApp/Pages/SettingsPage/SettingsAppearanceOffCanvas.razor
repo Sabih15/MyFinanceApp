@@ -1,0 +1,46 @@
+﻿@using MainApp.Components.Badge
+@using MainApp.Components.Dropdown.Actions
+@using MainApp.Components.OffCanvas
+
+@inject IJSRuntime JS
+
+<OffCanvas @ref="_offCanvas" PositionX="Position.End" Title="Appearance">
+    <fieldset class="py-5">
+        <legend><i class="bi bi-moon-stars-fill text-info-emphasis fs-5 pe-2"></i>App mode view</legend>
+        <div class="row align-items-center">
+            <div class="col-auto pe-0">
+                <small class="text-secondary">
+                    Your current mode view is
+                </small>
+            </div>
+            <div class="col-auto">
+                <DropdownActions Title="@_localStorageTheme"
+                                 ButtonSize="Size.Sm"
+                                 IconEnd="bi-chevron-down"
+                                 ButtonCssClass="@("rounded"+_appSettings.Button)"
+                                 ButtonInnerStyles="d-flex justify-content-between">
+                    <li class="px-2">
+                        <button class="dropdown-item text-@(Theme.Primary.ToString().ToLower())-emphasis rounded"
+                                @onclick="() => UpdateThemeAsync(ColorMode.Dark)">
+                            dark
+                        </button>
+                    </li>
+                    <li class="px-2">
+                        <button class="dropdown-item text-@(Theme.Primary.ToString().ToLower())-emphasis rounded"
+                                @onclick="() => UpdateThemeAsync(ColorMode.Light)">
+                            light
+                        </button>
+                    </li>
+                </DropdownActions>
+            </div>
+        </div>
+    </fieldset>
+    <div class="row">
+        <div class="col-6">
+            <button class="btn btn-@(Size.Sm.ToString().ToLower()) btn-outline-secondary w-100 @("rounded"+_appSettings.Button)"
+                    @onclick="() => CloseOffCanvasAsync()">
+                Close
+            </button>
+        </div>
+    </div>
+</OffCanvas>
